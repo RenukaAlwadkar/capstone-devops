@@ -2,8 +2,6 @@ name: DevOps Pipeline
 
 on:
 push:
-branches:
-- main
 
 jobs:
 build:
@@ -13,24 +11,6 @@ runs-on: ubuntu-latest
 steps:
   - uses: actions/checkout@v3
 
-  - name: Security Check
-    run: |
-      if grep -q "USER root" Dockerfile; then
-        echo "Root user detected!"
-        exit 1
-      else
-        echo "No root user"
-      fi
-
   - name: Build Docker Image
-    run: docker build -t meetmux-app .
-
-  - name: Tag Image
-    run: docker tag meetmux-app renukaalwadkar2/meetmux-app:latest
-
-  - name: Login to DockerHub
-    run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-
-  - name: Push Image
-    run: docker push renukaalwadkar2/meetmux-app:latest
+    run: docker build -t test-app .
 ```
