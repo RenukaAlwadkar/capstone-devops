@@ -11,16 +11,15 @@ runs-on: ubuntu-latest
 
 ```
 steps:
-  - name: Checkout Code
-    uses: actions/checkout@v3
+  - uses: actions/checkout@v3
 
-  - name: Security Check (No Root User)
+  - name: Security Check
     run: |
       if grep -q "USER root" Dockerfile; then
-        echo "❌ Root user detected! Failing build."
+        echo "Root user detected!"
         exit 1
       else
-        echo "✅ No root user found"
+        echo "No root user"
       fi
 
   - name: Build Docker Image
