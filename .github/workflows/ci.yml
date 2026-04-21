@@ -1,0 +1,41 @@
+name: DevOps Pipeline
+
+on:
+push:
+branches: [ "main" ]
+
+jobs:
+build:
+runs-on: ubuntu-latest
+
+```
+steps:
+- name: Checkout Code
+  uses: actions/checkout@v3
+
+# 🔐 Security Check - Fail if root user is used
+- name: Check for Root User
+  run: |
+    if grep -q "USER root" Dockerfile; then
+      echo "❌ Root user detected! Failing build."
+      exit 1
+    else
+      echo "✅ No root user found"
+    fi
+
+# 🐳 Build Docker Image
+- name: Build Docker Image
+  run: docker build -t meetmux-app .
+
+# 🏷️ Tag Image
+- name: Tag Image
+  run: docker tag meetmux-app renukaalwadkar2/meetmux-app:latest
+
+# 🔑 Login to DockerHub
+- name: Login to DockerHub
+  run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+# 🚀 Push Image to DockerHub
+- name: Push Image
+  run: docker push renukaalwadkar2/meetmux-app:latest
+```
